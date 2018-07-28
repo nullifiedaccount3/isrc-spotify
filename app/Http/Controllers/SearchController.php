@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ISRCExporter;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,8 +17,6 @@ class SearchController extends Controller
 
     protected $api;
 
-    protected $accessToken;
-
     public function __construct()
     {
         //
@@ -30,18 +29,13 @@ class SearchController extends Controller
      */
     public function index()
     {
-        $this->session = new Session(env('SPOTIFY_KEY'), env('SPOTIFY_SECRET'), env('SPOTIFY_REDIRECT_URI'));
         $this->api = new SpotifyWebAPI();
-        $this->session->refreshAccessToken(Auth::user()->spotify_refresh_token);
-        $this->accessToken = $this->session->getAccessToken();
-        $user = User::find(Auth::user()->id);
-        $user->spotify_token = $this->accessToken;
-        $user->spotify_token_expiry = Carbon::now(config('app.timezone'))->addSeconds($this->session->getTokenExpiration())->toDateTimeString();
-        $user->save();
-        $this->api->setAccessToken($this->accessToken);
-
-        $query = Input::get('q');
-        return json_encode($this->api->search($query, 'track'));
+        $this->api->setAccessToken(Auth::user()->spotify_token);
+        $inputs = [
+            'user_id' => Auth::user()->id,
+            'query' => Input::get('q')
+        ];
+        $this->dispatch(new ISRCExporter($inputs));
     }
 
     /**

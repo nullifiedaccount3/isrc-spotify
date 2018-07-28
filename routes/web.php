@@ -29,4 +29,4 @@ Route::get('/datatables/exports', 'ExporterController@make_exports')
 Route::get('/user/profile', 'UserController@index')
     ->middleware('web', 'auth');
 Route::resource('search', 'SearchController')
-    ->middleware('web', 'auth');
+    ->middleware('web', 'auth', 'refresh_token');

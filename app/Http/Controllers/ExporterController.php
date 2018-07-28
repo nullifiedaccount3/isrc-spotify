@@ -5,11 +5,17 @@ namespace App\Http\Controllers;
 use App\Exports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 use Yajra\DataTables\Facades\DataTables;
 
 class ExporterController extends Controller
 {
+    protected $api;
+
+    protected $session;
+
     public function __construct()
     {
         //

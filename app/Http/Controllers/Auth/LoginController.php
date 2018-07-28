@@ -78,7 +78,7 @@ class LoginController extends Controller
         $user->spotify_profile_api_url = $oauth_user_object->profileUrl;
         $user->spotify_token_expiry = Carbon::now(config('app.timezone'))->addSeconds($oauth_user_object->expiresIn);
         $user->save();
-        Auth::login($user);
+        Auth::login($user, true);
         return redirect()->to('/exporter');
     }
 
