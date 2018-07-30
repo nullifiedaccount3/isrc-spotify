@@ -35,6 +35,7 @@ class SearchController extends Controller
             'user_id' => Auth::user()->id,
             'query' => Input::get('q')
         ];
+
         $this->dispatch(new ISRCExporter($inputs));
     }
 
