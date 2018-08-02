@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exports;
 use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -83,6 +84,13 @@ class ISRCExporter implements ShouldQueue
                 'offset' => $offset
             ]);
             $this->fetch_isrc();
+        }
+
+        $export = Exports::where('search_query', $this->inputs['query'])->first();
+
+        if ($export->count() != 0) {
+            $export->job_complete = 1;
+            $export->save();
         }
     }
 

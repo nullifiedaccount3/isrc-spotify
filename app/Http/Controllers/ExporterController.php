@@ -6,6 +6,7 @@ use App\Exports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 use Yajra\DataTables\Facades\DataTables;
@@ -24,6 +25,15 @@ class ExporterController extends Controller
     public function make_exports()
     {
         return DataTables::of(Exports::query())->make(true);
+    }
+
+    public function file_download($file)
+    {
+        $headers = [
+            'Content-Type: text/tab-separated-values'
+        ];
+
+        return Response::download(storage_path('app/' . $file), $file, $headers);
     }
 
     /**

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports;
 use App\Jobs\ISRCExporter;
-use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-use SpotifyWebAPI\Session;
+use Illuminate\Support\Facades\Response;
 use SpotifyWebAPI\SpotifyWebAPI;
 
 class SearchController extends Controller
@@ -25,7 +24,6 @@ class SearchController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -37,6 +35,24 @@ class SearchController extends Controller
         ];
 
         $this->dispatch(new ISRCExporter($inputs));
+
+        $export = Exports::where('search_query', $inputs['query'])->first();
+
+        if (!is_null($export)) {
+            $export->job_complete = 0;
+            $export->save();
+        } else {
+            $export = new Exports();
+            $export->search_query = $inputs['query'];
+            $export->filename = $inputs['query'] . '.tsv';
+            $export->file = $inputs['query'] . '.tsv';
+            $export->job_complete = 0;
+            $export->save();
+        }
+
+        return Response::json([
+            'message' => 'ISRC query job for ' . $inputs['query'] . ' is being processed'
+        ]);
     }
 
     /**

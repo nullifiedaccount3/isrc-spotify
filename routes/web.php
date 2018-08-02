@@ -23,10 +23,11 @@ Route::get('/logout', 'Auth\LoginController@logout')
 
 Route::resource('exporter', 'ExporterController')
     ->middleware('web', 'auth');
+Route::get('/export/{file}', 'ExporterController@file_download');
 Route::get('/datatables/exports', 'ExporterController@make_exports')
     ->name('datatables.exports')
     ->middleware('web', 'auth');
 Route::get('/user/profile', 'UserController@index')
     ->middleware('web', 'auth');
 Route::resource('search', 'SearchController')
-    ->middleware('web', 'auth', 'refresh_token');
+    ->middleware('web', 'auth');

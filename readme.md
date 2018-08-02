@@ -1,3 +1,7 @@
-https://accounts.zoho.com/accounts/oauthcallback
-?state=05e22df60da1c20a8fc5799f2f23f714e76da60222a9106e03cc242cac2dc2f6a2b3301af6c82403bb0b4ef3cdb729a9ac15252d03d0676fd1eca66e2e08f0cb31180948bc2eb12b2e6ffa7bd1a1657a73293725eaaa0ab87c973ff71e791ced
-&code=4/AADKDtC-l8GrkXP0H4g5YkAMIM5GsjX6YPxJ0EOy3FNVaTMHkFIbY515z0I65IIcoz9rwZwDUw7AIoe4No1A200
+# ISRC Exporter
+
+We need a small app to generate a list of ISRC codes and album titles based on artist and track releases in the Spotify library. Results should populate a text file using a tilde delimited setup. The file that we provide will include a search string that should query Spotify, and then save the ISRC and album information returned by the API.  Developer should be able to determine what requirements are needed to query Spotify, and how those queries should be effectively set up.
+
+### Built by
+ - Bhargav Nanekalva
+ 
