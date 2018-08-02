@@ -16,8 +16,9 @@ class Exports extends Migration
         Schema::create('exports', function (Blueprint $table) {
             $table->increments('id');
             $table->string('search_query');
-            $table->string('filename');
             $table->string('file');
+            $table->integer('track_count')->default(0);
+            $table->integer('job_complete');
             $table->timestamps();
         });
     }

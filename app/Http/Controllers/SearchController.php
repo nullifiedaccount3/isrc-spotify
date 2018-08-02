@@ -4,17 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Exports;
 use App\Jobs\ISRCExporter;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
+use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 
 class SearchController extends Controller
 {
-    protected $session;
-
-    protected $api;
 
     public function __construct()
     {
@@ -27,8 +26,6 @@ class SearchController extends Controller
      */
     public function index()
     {
-        $this->api = new SpotifyWebAPI();
-        $this->api->setAccessToken(Auth::user()->spotify_token);
         $inputs = [
             'user_id' => Auth::user()->id,
             'query' => Input::get('q')
@@ -36,17 +33,41 @@ class SearchController extends Controller
 
         $this->dispatch(new ISRCExporter($inputs));
 
+        //Refresh token
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken(Auth::user()->spotify_token);
+        $session = new Session(env('SPOTIFY_KEY'), env('SPOTIFY_SECRET'), env('SPOTIFY_REDIRECT_URI'));
+        $user = User::find(Auth::user()->id);
+
+        try {
+            json_encode($this->api->me());
+        } catch (\Exception $exception) {
+            if ($session->refreshAccessToken($user->spotify_refresh_token)) {
+                $api->setAccessToken($session->getAccessToken());
+                $user->spotify_token = $session->getAccessToken();
+                $user->save();
+            }
+        }
+
+        $data = $api->search($inputs['query'], 'track', [
+            'limit' => 1,
+            'offset' => 0
+        ]);
+
         $export = Exports::where('search_query', $inputs['query'])->first();
 
         if (!is_null($export)) {
             $export->job_complete = 0;
+            $export->touch();
+            $export->track_count = $data->tracks->total;
             $export->save();
         } else {
             $export = new Exports();
             $export->search_query = $inputs['query'];
-            $export->filename = $inputs['query'] . '.tsv';
             $export->file = $inputs['query'] . '.tsv';
             $export->job_complete = 0;
+            $export->track_count = $data->tracks->total;
+            $export->touch();
             $export->save();
         }
 
