@@ -20,6 +20,9 @@ Route::get('login/spotify', 'Auth\LoginController@redirectToProvider')
 Route::get('login/spotify/callback', 'Auth\LoginController@handleProviderCallback');
 Route::get('/logout', 'Auth\LoginController@logout')
     ->name('logout');
+Route::get('/docs', function () {
+    return view('docs');
+});
 
 Route::resource('exporter', 'ExporterController')
     ->middleware('web', 'auth');
