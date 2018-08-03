@@ -64,6 +64,7 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
+        return Input::get();
 //        $oauth_object = Socialite::driver('spotify');
 //        $user = $oauth_object->user();
         $session = new \SpotifyWebAPI\Session(
