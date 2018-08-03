@@ -61,7 +61,7 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
-        $oauth_object = Socialite::driver('spotify');
+        $oauth_object = Socialite::driver('spotify')->stateless();
         $oauth_user_object = $oauth_object->user();
         if (User::where('spotify_id', $oauth_user_object->id)->count() == 0) {
             $user = new User();
