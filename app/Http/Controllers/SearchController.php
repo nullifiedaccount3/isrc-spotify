@@ -60,6 +60,7 @@ class SearchController extends Controller
             $export->job_complete = 0;
             $export->touch();
             $export->track_count = $data->tracks->total;
+            $export->user_id = Auth::user()->id;
             $export->save();
         } else {
             $export = new Exports();
@@ -67,6 +68,7 @@ class SearchController extends Controller
             $export->file = $inputs['query'] . '.tsv';
             $export->job_complete = 0;
             $export->track_count = $data->tracks->total;
+            $export->user_id = Auth::user()->id;
             $export->touch();
             $export->save();
         }

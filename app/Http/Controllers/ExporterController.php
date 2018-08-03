@@ -24,7 +24,7 @@ class ExporterController extends Controller
 
     public function make_exports()
     {
-        return DataTables::of(Exports::query())->make(true);
+        return DataTables::of(Exports::query()->where('user_id', Auth::user()->id))->make(true);
     }
 
     public function file_download($file)

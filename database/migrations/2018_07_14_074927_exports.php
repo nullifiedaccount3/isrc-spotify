@@ -18,6 +18,7 @@ class Exports extends Migration
             $table->string('search_query');
             $table->string('file');
             $table->integer('track_count')->default(0);
+            $table->integer('user_id')->default(0);
             $table->integer('job_complete');
             $table->timestamps();
         });

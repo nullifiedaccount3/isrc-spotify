@@ -76,14 +76,18 @@ class ISRCExporter implements ShouldQueue
         ]);
         $this->fetch_isrc();
 
-        while (!empty($this->data->tracks->items)) {
+        while ($this->data->tracks->offset <= 9900) {
             $offset = $offset + $limit;
             $this->refresh_token();
-            $this->data = $this->api->search($this->inputs['query'], 'track', [
-                'limit' => $limit,
-                'offset' => $offset
-            ]);
-            $this->fetch_isrc();
+            try {
+                $this->data = $this->api->search($this->inputs['query'], 'track', [
+                    'limit' => $limit,
+                    'offset' => $offset
+                ]);
+                $this->fetch_isrc();
+            } catch (\Exception $exception) {
+                Log::error($exception);
+            }
         }
 
         $export = Exports::where('search_query', $this->inputs['query'])->first();
