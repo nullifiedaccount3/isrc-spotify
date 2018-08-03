@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
@@ -61,6 +62,9 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
+        if (array_key_exists('error', Input::get())) {
+            return redirect()->to('/');
+        }
         $oauth_object = Socialite::driver('spotify');
         $oauth_user_object = $oauth_object->user();
         if (User::where('spotify_id', $oauth_user_object->id)->count() == 0) {

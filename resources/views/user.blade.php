@@ -1,5 +1,20 @@
 @extends('base')
 
+@section('top-nav')
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">ISRC Exporter</a>
+        <form style="width: 100%" id="search" action="{{url('/search')}}" method="get">
+            <input name="q" class="form-control form-control-dark w-100" type="text" placeholder="Search"
+                   aria-label="Search">
+        </form>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="{{url('/logout')}}">Sign out</a>
+            </li>
+        </ul>
+    </nav>
+@endsection
+
 @section('nav')
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
