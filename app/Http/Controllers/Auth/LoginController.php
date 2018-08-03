@@ -8,9 +8,12 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
+use SpotifyWebAPI\SpotifyWebAPI;
 
 class LoginController extends Controller
 {
@@ -61,23 +64,36 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
-        $oauth_object = Socialite::driver('spotify');
-        $oauth_user_object = $oauth_object->user();
-        if (User::where('spotify_id', $oauth_user_object->id)->count() == 0) {
+//        $oauth_object = Socialite::driver('spotify');
+//        $user = $oauth_object->user();
+        $session = new \SpotifyWebAPI\Session(
+            env('SPOTIFY_KEY'),
+            env('SPOTIFY_SECRET'),
+            env('SPOTIFY_REDIRECT_URI')
+        );
+        $session->requestAccessToken(Input::get('code'));
+        $accessToken = $session->getAccessToken();
+        $refreshToken = $session->getRefreshToken();
+        $api = new SpotifyWebAPI();
+        $api->setAccessToken($accessToken);
+
+        $spot_user = $api->me();
+
+//        return Response::json($user->images[0]->url);
+        if (User::where('spotify_id', $spot_user->id)->count() == 0) {
             $user = new User();
-            $user->spotify_id = $oauth_user_object->id;
+            $user->spotify_id = $spot_user->id;
         } else {
-            $user = User::where('spotify_id', $oauth_user_object->id)->first();
+            $user = User::where('spotify_id', $spot_user->id)->first();
         }
-        $user->name = $oauth_user_object->name;
-        $user->nickname = $oauth_user_object->nickname;
-        $user->email = $oauth_user_object->email;
-        $user->avatar = $oauth_user_object->avatar;
-        $user->spotify_token = $oauth_user_object->token;
-        $user->spotify_refresh_token = $oauth_user_object->refreshToken;
-        $user->spotify_profile_url = $oauth_user_object->user['external_urls']['spotify'];
-        $user->spotify_profile_api_url = $oauth_user_object->profileUrl;
-        $user->spotify_token_expiry = Carbon::now(config('app.timezone'))->addSeconds($oauth_user_object->expiresIn);
+        $user->name = $spot_user->display_name;
+        $user->nickname = $spot_user->display_name;
+        $user->avatar = $spot_user->images[0]->url;
+        $user->spotify_token = $accessToken;
+        $user->spotify_refresh_token = $refreshToken;
+        $user->spotify_profile_url = $spot_user->external_urls->spotify;
+        $user->spotify_profile_api_url = $spot_user->href;
+        $user->spotify_token_expiry = Carbon::createFromTimestamp($session->getTokenExpiration())->toDateTimeString();
         $user->save();
         Auth::login($user, true);
         return redirect()->to('/exporter');
@@ -86,6 +102,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return Redirect::to('/')->send();
+        return Redirect::to(' / ')->send();
     }
 }
