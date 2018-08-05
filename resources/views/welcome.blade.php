@@ -75,14 +75,14 @@
                 @endauth
             </div>
         @endif
-        <div class="title m-b-md">
+        <div class="title m-b-md" style="cursor:default;">
             ISRC Exporter
         </div>
 
         <div class="links">
             @if(Auth::check())
                 <button type="button" class="btn btn-primary" onclick="location.href='{{url('/exporter')}}'">
-                    Exporter
+                    Dashboard
                 </button>
             @else
                 <button type="button" class="btn btn-primary" onclick="location.href='{{url('/login/spotify')}}'">
@@ -90,7 +90,7 @@
                 </button>
             @endif
             <button type="button" class="btn btn-primary" onclick="location.href='{{url('/docs')}}'">
-                Documentation
+                Help
             </button>
         </div>
     </div>

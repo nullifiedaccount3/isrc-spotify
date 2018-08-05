@@ -30,9 +30,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{url('/user/profile')}}">
+                        <a class="nav-link" href="{{url('/user/profile')}}">
                             <span data-feather="user"></span>
                             User Profile<span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{url('/docs')}}">
+                            <span data-feather="help-circle"></span>
+                            Help<span class="sr-only">(current)</span>
                         </a>
                     </li>
                 @endif

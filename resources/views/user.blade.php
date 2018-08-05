@@ -31,6 +31,12 @@
                         User Profile<span class="sr-only">(current)</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url('/docs')}}">
+                        <span data-feather="help-circle"></span>
+                        Help
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
