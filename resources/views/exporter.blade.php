@@ -634,7 +634,7 @@
         });
 
         setInterval(function () {
-            exports_table.ajax.reload(false);
+            exports_table.ajax.reload(null, false);
         }, 1000);
 
         $.fn.dataTable.ext.errMode = 'none';
