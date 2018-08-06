@@ -11,3 +11,4 @@ Install Docker and Docker Compose.
 
 ### Built by
  - Bhargav Nanekalva
+    - bhargav3@gmail.com
