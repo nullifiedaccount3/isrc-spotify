@@ -54,7 +54,9 @@ class SearchController extends Controller
             'offset' => 0
         ]);
 
-        $export = Exports::where('search_query', $inputs['query'])->first();
+        $export = Exports::where('search_query', $inputs['query'])
+            ->where('user_id', Auth::user()->id)
+            ->first();
 
         if (!is_null($export)) {
             $export->job_complete = 0;
