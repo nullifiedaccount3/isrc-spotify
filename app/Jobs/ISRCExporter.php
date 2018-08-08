@@ -90,7 +90,9 @@ class ISRCExporter implements ShouldQueue
             }
         }
 
-        $export = Exports::where('search_query', $this->inputs['query'])->first();
+        $export = Exports::where('search_query', $this->inputs['query'])
+            ->where('user_id', $this->inputs['user_id'])
+            ->first();
 
         if ($export->count() != 0) {
             $export->job_complete = 1;
